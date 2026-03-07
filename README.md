@@ -1,2 +1,2 @@
-# cuda-fortran
+# CUDA Fortran
 Practice for CUDA Fortran
