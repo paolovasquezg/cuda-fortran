@@ -1,9 +1,21 @@
-program version
+program gpuInfo
   use cudafor
   implicit none
-  integer :: istat, ver
-  istat = cudaDriverGetVersion(ver)
-  print *, 'Driver version:  ', ver
+
+  type(cudaDeviceProp) :: prop
+  integer :: istat, ver, dver
+
+  ! Toolkit version
   istat = cudaRuntimeGetVersion(ver)
-  print *, 'Runtime version: ', ver
-end program version
+  print *, 'CUDA Toolkit version: ', ver
+
+  ! Driver version
+  istat = cudaDriverGetVersion(dver)
+  print *, 'CUDA Driver version:  ', dver
+
+  ! GPU info
+  istat = cudaGetDeviceProperties(prop, 0)
+  print *, 'GPU Name:             ', trim(prop%name)
+  print *, 'Compute Capability:   ', prop%major, '.', prop%minor
+
+end program gpuInfo
