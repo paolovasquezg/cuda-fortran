@@ -1,0 +1,15 @@
+module precision_m
+  use, intrinsic :: iso_fortran_env
+  integer, parameter :: fp_kind = real64
+end module precision_m
+
+program main
+  use precision_m
+  implicit none
+
+  real(fp_kind) :: x
+
+  x = 3.14159265358979_fp_kind
+  print *, "Value of x: ", x
+
+end program main

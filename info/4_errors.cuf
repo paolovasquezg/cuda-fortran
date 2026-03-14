@@ -1,0 +1,19 @@
+program testError
+  use cudafor
+  implicit none
+
+  integer :: istat
+
+  istat = cudaDeviceReset()
+  
+  istat = cudaSetDevice(9999)
+
+  if (istat /= cudaSuccess) then
+    print *, "CUDA Error detected!"
+    print *, "Error code: ", istat
+    print *, "Error message: ", trim(cudaGetErrorString(istat))
+  else
+    print *, "No error (device 9999 exists?!)"
+  end if
+
+end program testError
