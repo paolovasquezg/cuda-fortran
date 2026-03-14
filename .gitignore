@@ -1,3 +1,4 @@
 *.o
 *.mod
 a.out
+.DS_Store
