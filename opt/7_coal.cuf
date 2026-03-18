@@ -1,0 +1,25 @@
+attributes(global) subroutine transposeCoalesced(matOut, matIn)
+    implicit none
+    real, intent(out) :: matOut(nCols, nRows)
+    real, intent(in)  :: matIn(nRows, nCols)
+
+    real, shared :: tile(nTile, nTile)
+    integer :: row, col, j
+
+    row = (blockIdx%x-1)*nTile + threadIdx%x
+    col = (blockIdx%y-1)*nTile + threadIdx%y
+
+    do j = 0, nTile-1, blockCols
+      tile(threadIdx%x, threadIdx%y+j) = matIn(row, col+j)
+    end do
+
+    call syncthreads()
+
+    row = (blockIdx%y-1)*nTile + threadIdx%x
+    col = (blockIdx%x-1)*nTile + threadIdx%y
+
+    do j = 0, nTile-1, blockCols
+      matOut(row, col+j) = tile(threadIdx%y+j, threadIdx%x)
+    end do
+
+  end subroutine transposeCoalesced
