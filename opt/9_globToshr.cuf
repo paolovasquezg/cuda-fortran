@@ -1,0 +1,20 @@
+attributes(global) subroutine copy_ILP_sharedAsync(odata, idata)
+  use wmma
+  implicit none
+  real(fpKind) :: odata(*), idata(*)
+  real(fpKind), shared :: tmp(blockDim%x, ILP)
+  integer :: i,j
+
+  i = (blockIdx%x-1)*blockDim%x*ILP + threadIdx%x
+
+  do j = 1, ILP
+      call pipelineMemcpyAsync(tmp(threadIdx%x,j), &
+          idata(i+(j-1)*blockDim%x))
+      call pipelineCommit()
+  enddo
+
+  do j = 1, ILP
+      call pipelineWaitPrior(ILP-j)
+      odata(i+(j-1)*blockDim%x) = tmp(threadIdx%x,j)
+  enddo
+end subroutine copy_ILP_sharedAsync
